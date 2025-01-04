@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Peta Kampus - Poliban</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <style>
+        #map {
+            height: 100vh;
+            margin: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="map"></div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        // Inisialisasi peta di pusat area kampus
+        var map = L.map('map').setView([-3.295977, 114.582472], 18);
+
+        // Tambahkan layer dasar (OpenStreetMap dan Google Satellite)
+        var osmLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        var satelliteLayer = L.tileLayer('http://www.google.cn/maps/vt?lyrs=s&x={x}&y={y}&z={z}', {
+            maxZoom: 20,
+            attribution: 'Google Satellite'
+        });
+
+        // Deklarasi layer grup untuk setiap kategori gedung
+        var layerGroups = {
+            "Umum": L.layerGroup(),
+            "Akademik": L.layerGroup(),
+            "Teknik Elektro": L.layerGroup(),
+            "Teknik Sipil dan Kebumian": L.layerGroup(),
+            "Teknik Mesin": L.layerGroup(),
+            "Akuntansi": L.layerGroup(),
+            "Administrasi Bisnis": L.layerGroup(),
+            "Parkiran": L.layerGroup(),
+            "UKM": L.layerGroup()
+        };
+
+        // Fungsi untuk memuat data gedung dari server
+        function fetchBuildingData(department, layer) {
+            fetch(`connection_db.php?department=${department}`)
+                .then(response => response.json())
+                .then(data => {
+                    // Tambahkan poligon ke layer berdasarkan data dari server
+                    data.forEach(building => {
+                        if (building.koordinat) {
+                            try {
+                                const coords = JSON.parse(building.koordinat); // Parse koordinat JSON
+                                // Pilih warna berdasarkan jurusan
+                                const fillColor = jurusanColors[building.nama_jurusan] || jurusanColors['default'];
+                                L.polygon(coords, {
+                                    color: 'black',
+                                    fillColor: fillColor,
+                                    weight: 2,
+                                    dashArray: '5, 5'
+                                })
+                                    .bindPopup(`<b>${building.nama_gedung}</b><br>${building.deskripsi || ''}`)
+                                    .addTo(layer);
+                            } catch (error) {
+                                console.error(`Error parsing coordinates for ${building.nama_gedung}:`, error);
+                            }
+                        }
+                    });
+                    layer.addTo(map); // Tambahkan layer ke peta
+                })
+                .catch(error => {
+                    console.error(`Error fetching data for ${department}:`, error);
+                    alert(`Failed to load data for ${department}.`);
+                });
+        }
+
+        const jurusanColors = {
+            'Teknik Sipil dan Kebumian': 'rgb(212,166,121)',
+            'Teknik Mesin': 'rgb(4,137,199)',
+            'Teknik Elektro': 'rgb(201,0,2)',
+            'Akuntansi': 'rgb(220,215,2)',
+            'Administrasi Bisnis': 'rgb(3,190,25)',
+            'Parkiran': 'rgb(96,96,96)',
+            'default': 'rgb(14,0,192)' // Warna default jika jurusan tidak ada di objek
+        };
+
+        // Koordinat untuk polygon area Poliban
+        var polibanCoords = [
+            [-3.297889, 114.581756],
+            [-3.297132, 114.580903],
+            [-3.296918, 114.581182],
+            [-3.296307, 114.581386],
+            [-3.296221, 114.58152],
+            [-3.295817, 114.581394],
+            [-3.294934, 114.582062],
+            [-3.294561, 114.582118],
+            [-3.29386, 114.582607],
+            [-3.295109, 114.584125]
+        ];
+
+        // Menambahkan polygon ke peta
+        var polibanPolygon = L.polygon(polibanCoords, {
+            color: 'black',
+            dashArray: '5, 5',
+        }).addTo(map);
+
+        // Memuat data untuk setiap kategori gedung
+        Object.keys(layerGroups).forEach(department => {
+            fetchBuildingData(department, layerGroups[department]);
+        });
+
+        // Tambahkan kontrol untuk mengganti layer dasar dan overlay
+        var baseMaps = {
+            "Layer Standar": osmLayer,
+            "Layer Satelit": satelliteLayer
+        };
+
+        var overlayMaps = Object.fromEntries(
+            Object.keys(layerGroups).map(department => [department, layerGroups[department]])
+        );
+
+        L.control.layers(baseMaps, overlayMaps).addTo(map);
+
+        // Debugging: Log status layer untuk memeriksa apakah poligon telah ditambahkan
+        map.on('overlayadd', function (event) {
+            console.log(`Layer ditambahkan: ${event.name}`);
+        });
+
+        map.on('overlayremove', function (event) {
+            console.log(`Layer dihapus: ${event.name}`);
+        });
+    </script>
+</body>
+
+</html>
