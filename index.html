@@ -70,7 +70,12 @@
                                         `Jurusan: ${building.nama_jurusan || 'Tidak Diketahui'}<br>` +
                                         (building.foto ? `<img src="${building.foto}" alt="${building.nama_gedung}" style="width:100%;height:auto;">` : '')
                                     )
+                                    .bindTooltip(
+                                        building.nama_gedung, // Menampilkan nama gedung
+                                        { permanent: false, sticky: true, direction: 'top' } // Tooltip muncul saat hover
+                                    )
                                     .addTo(layer);
+
                             } catch (error) {
                                 console.error(`Error parsing coordinates for ${building.nama_gedung}:`, error);
                             }
