@@ -64,7 +64,12 @@
                                     weight: 2,
                                     dashArray: '5, 5'
                                 })
-                                    .bindPopup(`<b>${building.nama_gedung}</b><br>${building.deskripsi || ''}`)
+                                    .bindPopup(
+                                        `<b>${building.nama_gedung}</b><br>` +
+                                        `${building.deskripsi || ''}<br>` +
+                                        `Jurusan: ${building.nama_jurusan || 'Tidak Diketahui'}<br>` +
+                                        (building.foto ? `<img src="${building.foto}" alt="${building.nama_gedung}" style="width:100%;height:auto;">` : '')
+                                    )
                                     .addTo(layer);
                             } catch (error) {
                                 console.error(`Error parsing coordinates for ${building.nama_gedung}:`, error);
