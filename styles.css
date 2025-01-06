@@ -81,6 +81,7 @@ body {
 #building-details {
     position: fixed;
     top: 80px;
+    bottom: 21px;   
     right: 20px;
     width: 350px;
     max-height: calc(100vh - 40px);
@@ -126,8 +127,8 @@ body {
     white-space: normal;
 }
 
+
 img {
-    margin-top: 10px;
     border-radius: 8px;
 }
 
@@ -141,4 +142,4 @@ img {
 
 .close-btn:hover {
     color: #333;
-}
+} 
