@@ -7,9 +7,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link rel="stylesheet" href="styles.css">
-    
+
     <style>
-        
+
     </style>
 </head>
 
@@ -27,14 +27,16 @@
             <input type="text" id="search-input" placeholder="Cari nama gedung...">
         </div>
     </div>
-    <aside id="building-details" style="display:none;">
-        <h2>Detail Gedung</h2>
+    <aside id="building-details">
+        <h2>Detail Gedung
+            <button class="close-btn" onclick="closeDetails()">&times;</button>
+        </h2>
         <div id="details-content"></div>
     </aside>
+
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="script.js"></script>
 </body>
-
 
 </html>

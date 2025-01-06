@@ -1,6 +1,6 @@
 body {
     margin: 0;
-    padding: 0;
+    font-family: "Helvetica Neue", Arial, Helvetica, sans-serif;
 }
 
 #map {
@@ -80,23 +80,65 @@ body {
 
 #building-details {
     position: fixed;
-    top: 0;
-    right: 0;
-    width: 300px;
-    height: 100%;
-    background-color: #f4f4f4;
-    box-shadow: -2px 0 5px rgba(0,0,0,0.3);
-    overflow-y: auto;
+    top: 80px;
+    right: 20px;
+    width: 350px;
+    max-height: calc(100vh - 40px);
+    background-color: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     padding: 20px;
     z-index: 1000;
     display: none;
+    overflow-y: auto;
 }
 
 #building-details h2 {
-    margin-top: 0;
+    margin: 0;
+    font-size: 18px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 #details-content {
     margin-top: 20px;
+    font-size: 14px;
+    line-height: 1.6;
 }
 
+.detail-item {
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.detail-item span {
+    display: inline-block;
+    max-width: 65%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.detail-item span:hover {
+    white-space: normal;
+}
+
+img {
+    margin-top: 10px;
+    border-radius: 8px;
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+    color: #999;
+}
+
+.close-btn:hover {
+    color: #333;
+}
